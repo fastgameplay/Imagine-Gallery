@@ -15,10 +15,6 @@ public class ImageProxy : MonoBehaviour
             if (_instance == null)
             {
                 _instance = FindObjectOfType<ImageProxy>(); // Eewww
-                if (_instance == null)
-                {
-                    _instance = new GameObject("Spawned ImageProxy", typeof(ImageProxy)).GetComponent<ImageProxy>();
-                }
             }
             return _instance;
         }

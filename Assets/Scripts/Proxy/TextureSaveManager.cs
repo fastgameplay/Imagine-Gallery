@@ -10,9 +10,9 @@ public static class TextureSaveManager
     public static void SaveTextureAsPNG(byte[] bytes, int id){
         File.WriteAllBytes(Application.dataPath + cachingDirectory + id + suffix, bytes);
         Debug.Log( $"{bytes.Length / 1024} KB was saved as Image{id}");
-#if UNITY_EDITOR
-        UnityEditor.AssetDatabase.Refresh();
-#endif
+// #if UNITY_EDITOR
+//         UnityEditor.AssetDatabase.Refresh();
+// #endif
     }
     public static bool CheckTextureByID(int id){
         return File.Exists(Application.dataPath + cachingDirectory + id + suffix);
