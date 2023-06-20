@@ -35,10 +35,13 @@ public class ImageProxy : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
     public Texture GetRawTexture(int id){
-        if(_galleryData.HasTexture(id)) return _galleryData.GetTexture(id);
-        if(_idsToLoad.Contains(id) == true) return _defaultTexture;
-        
-        _idsToLoad.Enqueue(id);
+        if(TextureSaveManager.CheckTextureByID(id)) {
+            Debug.Log($"Found Data Of ID {id}");
+
+            return TextureSaveManager.GetTexture(id);
+        }
+
+        if(_idsToLoad.Contains(id) == false) _idsToLoad.Enqueue(id);
 
         if(_isActive == false) StartCoroutine(LoadImagesFromQueue());
         
@@ -48,31 +51,32 @@ public class ImageProxy : MonoBehaviour
     IEnumerator LoadImagesFromQueue(){
         _isActive = true;
         while(_idsToLoad.Count > 0){
-            yield return LoadImageWithID(_idsToLoad.Dequeue());
+            yield return DownloadAndCacheTexture(_idsToLoad.Dequeue());
         }
         _isActive = false;
     }
 
-    IEnumerator LoadImageWithID(int id) {
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(_urlData.Url + id + _urlData.Suffix);
+    private IEnumerator DownloadAndCacheTexture(int id){
+            for(int i = 0; i < TRIES_PER_REQUEST; i++){
+                using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(_urlData.Url + id + _urlData.Suffix)){
+                    yield return request.SendWebRequest();
+                    if (request.result == UnityWebRequest.Result.ConnectionError){
+                        //Try TRIES_PER_REQUEST times if 
+                        Debug.Log("ConnectionError");
+                        continue;
+                    }
+                    if(request.result == UnityWebRequest.Result.ProtocolError){
+                        OnTextureNotFound?.Invoke(id);
+                        break;
+                    }
 
-        for (int i = 0; i < TRIES_PER_REQUEST; i++){
-            yield return request.SendWebRequest();
-            if (request.result == UnityWebRequest.Result.ConnectionError){
-                //Try 3 times if 
-                continue;
+                    TextureSaveManager.SaveTextureAsPNG(request.downloadHandler.data,id);
+
+                    OnTextureUpdate?.Invoke(id);
+                    Debug.Log($"Downloaded Data of ID {id}");
+                }            
             }
-            if(request.result == UnityWebRequest.Result.ProtocolError){
-                OnTextureNotFound?.Invoke(id);
-            }
-            else{
-                _galleryData.AddTexture(((DownloadHandlerTexture)request.downloadHandler).texture, id);
-                OnTextureUpdate?.Invoke(id);
-            }
-            break;
-        }
-        
+
     }
-
 
 }

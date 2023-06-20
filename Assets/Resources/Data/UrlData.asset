@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eb6e7e63cc769b4b8cc347e764f4c27, type: 3}
   m_Name: UrlData
   m_EditorClassIdentifier: 
-  _url: 
-  _suffix: 
+  _url: http://data.ikppbb.com/test-task-unity-data/pics/
+  _suffix: .jpg
