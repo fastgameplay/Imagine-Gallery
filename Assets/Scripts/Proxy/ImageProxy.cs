@@ -8,13 +8,27 @@ public class ImageProxy : MonoBehaviour
 {
     private const int TRIES_PER_REQUEST = 3;
 
-    public static ImageProxy Instance {get; private set;}
+    public static ImageProxy Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<ImageProxy>(); // Eewww
+                if (_instance == null)
+                {
+                    _instance = new GameObject("Spawned ImageProxy", typeof(ImageProxy)).GetComponent<ImageProxy>();
+                }
+            }
+            return _instance;
+        }
+    }
+    private static ImageProxy _instance;
 
     public event Action<int> OnTextureUpdate;
     public event Action<int> OnTextureNotFound;
     
     [SerializeField] private Texture _defaultTexture;
-    [SerializeField] private Scr_GalleryData _galleryData;
     
     [Header("Link")]
     [SerializeField] Scr_UrlData _urlData;
@@ -27,16 +41,16 @@ public class ImageProxy : MonoBehaviour
         if(ImageProxy.Instance != null && ImageProxy.Instance != this){
             Destroy(this);
         }
-        else{
-            Instance = this;
-        }
+
 
         _idsToLoad = new Queue<int>();
+
+
         DontDestroyOnLoad(gameObject);
     }
     public Texture GetRawTexture(int id){
         if(TextureSaveManager.CheckTextureByID(id)) {
-            Debug.Log($"Found Data Of ID {id}");
+                Debug.Log($"Found Data Of ID {id}");
 
             return TextureSaveManager.GetTexture(id);
         }

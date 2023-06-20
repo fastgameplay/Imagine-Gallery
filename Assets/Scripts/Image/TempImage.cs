@@ -5,11 +5,12 @@ using UnityEngine.UI;
 [RequireComponent(typeof(RawImage))]
 public class TempImage : MonoBehaviour
 {
-    [SerializeField] int _id;
-    [SerializeField] ImageProxy _proxy;
+    [SerializeField] int _id = -1;
+    ImageProxy _proxy;
     RawImage _currentRawImage;
     void Awake(){
         _currentRawImage = GetComponent<RawImage>();
+        _proxy = ImageProxy.Instance;
     }
     void Start(){
         GetAndSetTexture();
@@ -26,9 +27,11 @@ public class TempImage : MonoBehaviour
         Destroy(gameObject);
     }
 
+
     void GetAndSetTexture(){
         _currentRawImage.texture = _proxy.GetRawTexture(_id);
     }
+
 
     void OnEnable(){
         _proxy.OnTextureUpdate += TextureUpdate;
