@@ -39,7 +39,7 @@ public class SceneLoader : MonoBehaviour
         _loadingView.SetActive(true);
         
         while(!operation.isDone){
-            _progressBar.Progress = operation.progress / 0.9f;
+            _progressBar.Progress = operation.progress / 0.5f;
             yield return null;
         }
 
