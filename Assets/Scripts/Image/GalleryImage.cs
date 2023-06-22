@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-public class GalleryImage : MonoBehaviour
+using UnityEngine.EventSystems;
+public class GalleryImage : MonoBehaviour, IPointerClickHandler
 {
     int _id;
     RawImage _currentRawImage;
@@ -16,13 +17,19 @@ public class GalleryImage : MonoBehaviour
     void UpdateTexture(){
         _currentRawImage.texture = ImageProxy.Instance.GetRawTexture(_id);
     }
+
+    public void OnPointerClick(PointerEventData eventData){
+        PlayerPrefs.SetInt(nameof(PlayerPrefKeys.ActiveImageID),_id);
+        SceneLoader.Instance.LoadScene(2);
+    }
+
     void TextureUpdate(int id){
         if(id != _id) return;
         UpdateTexture();
     }
     void TextureNotFound(int id){
         if(id != _id) return;
-        Debug.Log($"Texture Of ID {_id} Not Found");
+        Debug.LogWarning($"Texture Of ID {_id} Not Found");
         Destroy(gameObject);
     }
 

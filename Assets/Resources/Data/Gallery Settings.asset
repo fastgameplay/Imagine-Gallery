@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 731618386bc552c45ab9a7bae5ee5392, type: 3}
   m_Name: Gallery Settings
   m_EditorClassIdentifier: 
-  _autoLoadRange: {x: 1, y: 10}
+  _autoLoadRange: {x: 1, y: 66}
   _galleryImagePrefab: {fileID: 6674562636618847211, guid: 98a7819fb45c5224c98e95e0e0a30b90, type: 3}

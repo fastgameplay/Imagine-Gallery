@@ -35,7 +35,9 @@ public class ImageProxy : MonoBehaviour
 
     void Awake(){
         if(ImageProxy.Instance != null && ImageProxy.Instance != this){
-            Destroy(this);
+            Destroy(gameObject);
+        } else{
+            _instance = this;
         }
 
 
@@ -46,8 +48,6 @@ public class ImageProxy : MonoBehaviour
     }
     public Texture GetRawTexture(int id){
         if(TextureSaveManager.CheckTextureByID(id)) {
-                Debug.Log($"Found Data Of ID {id}");
-
             return TextureSaveManager.GetTexture(id);
         }
 
@@ -72,7 +72,7 @@ public class ImageProxy : MonoBehaviour
                     yield return request.SendWebRequest();
                     if (request.result == UnityWebRequest.Result.ConnectionError){
                         //Try TRIES_PER_REQUEST times if 
-                        Debug.Log("ConnectionError");
+                        Debug.LogWarning("ConnectionError");
                         continue;
                     }
                     if(request.result == UnityWebRequest.Result.ProtocolError){
@@ -83,7 +83,6 @@ public class ImageProxy : MonoBehaviour
                     TextureSaveManager.SaveTextureAsPNG(request.downloadHandler.data,id);
 
                     OnTextureUpdate?.Invoke(id);
-                    Debug.Log($"Downloaded Data of ID {id}");
                 }            
             }
 
