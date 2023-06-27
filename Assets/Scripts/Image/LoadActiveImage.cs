@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-[RequireComponent(typeof(RawImage))]
+[RequireComponent(typeof(GalleryImage))]
 public class LoadActiveImage : MonoBehaviour
 {
-    RawImage _currentRawImage;
+    GalleryImage _currentGalleryImage;
     void Awake(){
-        _currentRawImage = GetComponent<RawImage>();
+        _currentGalleryImage = GetComponent<GalleryImage>();
     }
     
     void Start(){
@@ -16,6 +16,6 @@ public class LoadActiveImage : MonoBehaviour
             Debug.LogError($"PlayerPrefs isn't containing value of {nameof(PlayerPrefKeys.ActiveImageID)}");
             SceneLoader.Instance.LoadScene(1);
         }
-        _currentRawImage.texture = ImageProxy.Instance.GetRawTexture(id);
+        _currentGalleryImage.UpdateID(id);
     }
 }
